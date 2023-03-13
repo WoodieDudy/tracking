@@ -12,7 +12,7 @@ class Yolov8Detector(BaseDetector):
         self.device = 'cpu'
         self.test_size = (640, 640)
 
-        self._model = YOLO('/Users/georgy/Trash/yolov8m.pt')
+        self._model = YOLO('assets/weights/yolov8m.pt')
 
         # self._model.classes = [0]
         # self._model.confidence = 0.2

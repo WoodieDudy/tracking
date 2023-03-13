@@ -7,20 +7,20 @@ from cv2wrappers import VideoCapture
 from visualizing import TrackVisualizer
 
 
-video_path = '/Users/georgy/Trash/39lST_1.mp4'
+video_path = '/home/gk/projects/nir_tracking/data/videos/basket.mp4'
 cap = VideoCapture(video_path).rgb()
 
 detector = Yolov8Detector()
 tracker = ByteTracker(fps=cap.fps, video_shape=cap.size)
 video_writer = cv2.VideoWriter(
-    '/Users/georgy/Trash/39lST_1_res.mp4',
+    'res.mp4',
     cv2.VideoWriter_fourcc(*'mp4v'),
     cap.fps,
     cap.size
 )
 visualizer = TrackVisualizer()
 
-for frames_batch in tqdm(cap.iterate_batched(4)):
+for frames_batch in tqdm(cap.iterate_batched(64)):
     batch_preds = detector.inference(frames_batch)
     tracking_objects_batch = tracker.update(batch_preds)
 

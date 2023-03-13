@@ -1,2 +1,4 @@
 .idea
 *.pt
+.env
+__pycache__/
