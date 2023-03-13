@@ -12,6 +12,7 @@ class TrackVisualizer:
         self._text_color = (45, 200, 45)
         self._clothes_violation_border_color = (255, 0, 0)
         self._clothes_default_border_color = (0, 255, 0)
+        self.font = ImageFont.truetype("assets/arial.ttf", 20)
 
     def draw_box(self, draw, coords, border_color=None):
         border_color = border_color or self._border_color
@@ -36,8 +37,7 @@ class TrackVisualizer:
 
         for i, bb in enumerate(bbs):
             self.draw_box(draw, bb.xyxy, border_color=(255, 0, 255))
-            font = ImageFont.truetype("assets/arial.ttf", 20)
-            self.draw_label(draw, bb.xyxy, bb.label, font, down=False)
+            self.draw_label(draw, bb.xyxy, bb.label, self.font, down=False)
 
         numpy_image = np.array(pil_image)  # type: ignore
         return numpy_image

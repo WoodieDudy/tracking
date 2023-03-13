@@ -14,7 +14,7 @@ detector = Yolov8Detector()
 tracker = ByteTracker(fps=cap.fps, video_shape=cap.size)
 video_writer = cv2.VideoWriter(
     'res.mp4',
-    cv2.VideoWriter_fourcc(*'mp4v'),
+    cv2.VideoWriter_fourcc(*'MPEG'),
     cap.fps,
     cap.size
 )
