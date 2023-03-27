@@ -14,16 +14,13 @@ class Yolov8Detector(BaseDetector):
 
         self._model = YOLO('assets/weights/yolov8m.pt')
 
-        # self._model.classes = [0]
-        # self._model.confidence = 0.2
-
     def inference(self, images_list):
-        preds_of_frames = self._model(images_list)
+        preds_of_frames = self._model.predict(source=images_list, classes = [0], conf= 0.1, verbose=False)
         res = []
         for bbs_of_frames in preds_of_frames:
             bbs = []
             for xyxy, cls, conf in zip(bbs_of_frames.boxes.xyxy, bbs_of_frames.boxes.cls, bbs_of_frames.boxes.conf):
-                bbs.append(BoundingBox(*xyxy, conf))
+                bbs.append(BoundingBox(*xyxy, conf, cls))
             res.append(bbs)
 
         return res
