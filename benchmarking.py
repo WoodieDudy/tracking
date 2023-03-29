@@ -30,7 +30,7 @@ deep_sort_benchmark = TrackingBenchmark(
     dataset_path=dataset_path,
     batch_size=batch_size,
     video_writer_factory=lambda root_dir, sequence: TrackWriter(sequence,
-                                                                videos_path / f'videosDeepSort_{root_dir[-2:]}_result.mp4'),
+                                                                videos_path / f'DeepSort_{root_dir[-2:]}_result.mp4'),
     mota_metrics=MOTAMetrics(max_iou=0.5),
     description='DeepSort'
 )
