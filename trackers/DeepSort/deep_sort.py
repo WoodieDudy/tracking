@@ -23,10 +23,7 @@ class DeepSort(BaseTracker):
         track_objects_batch = []
 
         for frame, bbs in zip(frames, bounding_boxes_batch):
-            if bbs:
-                pred = [bb.to_deepsort() for bb in bbs]
-            else:
-                pred = []
+            pred = [bb.to_deepsort() for bb in bbs]
 
             online_targets = self._tracker.update_tracks(pred, frame=frame)
             online_bbs = [self._to_track_object(t) for t in online_targets if
