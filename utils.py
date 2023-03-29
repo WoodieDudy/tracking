@@ -4,14 +4,14 @@ from collections import namedtuple
 
 import cv2
 
+Sequence = namedtuple('Sequence', ['name', 'imDir', 'frameRate', 'seqLength', 'imWidth', 'imHeight', 'imExt'])
 
-def parse_config_file(config_file_path):
+
+def parse_config_file(config_file_path) -> Sequence:
     config = configparser.ConfigParser()
 
-    # read the configuration file
     config.read(config_file_path)
 
-    # get the values of the "Sequence" section
     name = config.get('Sequence', 'name')
     imDir = config.get('Sequence', 'imDir')
     frameRate = config.getint('Sequence', 'frameRate')
@@ -20,9 +20,8 @@ def parse_config_file(config_file_path):
     imHeight = config.getint('Sequence', 'imHeight')
     imExt = config.get('Sequence', 'imExt')
 
-    # create a namedtuple and return it
-    Sequence = namedtuple('Sequence', ['name', 'imDir', 'frameRate', 'seqLength', 'imWidth', 'imHeight', 'imExt'])
     return Sequence(name, imDir, frameRate, seqLength, imWidth, imHeight, imExt)
+
 
 def images_reader_by_batch(dir, batch_size):
     files = os.listdir(dir)

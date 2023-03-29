@@ -1,7 +1,7 @@
 import torch
 
-from trackers import BaseTracker
 from core import BoundingBox, TrackObject
+from trackers.base_tracker import BaseTracker
 from .origin_tracker import BYTETracker
 
 
@@ -17,7 +17,7 @@ class ByteTracker(BaseTracker):
             frame_rate=fps
         )
 
-    def update(self, bounding_boxes_batch: list[list[BoundingBox]]) -> list[list[TrackObject]]:
+    def update(self, frames: list, bounding_boxes_batch: list[list[BoundingBox]]) -> list[list[TrackObject]]:
         res = []
         for bbs in bounding_boxes_batch:
             if bbs:

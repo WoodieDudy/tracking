@@ -2,3 +2,5 @@
 *.pt
 .env
 __pycache__/
+mot20
+videos

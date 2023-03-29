@@ -23,3 +23,6 @@ class BoundingBox:
     def to_tensor(self):
         # no cls yet?
         return torch.tensor([self.x_min, self.y_min, self.x_max, self.y_max, self.conf])
+
+    def to_deepsort(self):
+        return [[self.x_min, self.y_min, self.x_max - self.x_min, self.y_max - self.y_min], self.conf, self.cls_id]

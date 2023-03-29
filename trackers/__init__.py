@@ -1,2 +1,2 @@
-from .base_tracker import BaseTracker
-from .ByteTrack.byte_tracker import ByteTracker
+from .ByteTrack import ByteTracker
+from .DeepSort import DeepSort
