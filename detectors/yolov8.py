@@ -6,12 +6,6 @@ from core import BoundingBox
 
 class Yolov8Detector(BaseDetector):
     def __init__(self):
-        self.rgb_means = (0.485, 0.456, 0.406)
-        self.std = (0.229, 0.224, 0.225)
-        self.fp16 = False
-        self.device = 'cpu'
-        self.test_size = (640, 640)
-
         self._model = YOLO('assets/weights/yolov8m.pt')
 
     def inference(self, images_list):

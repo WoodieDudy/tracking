@@ -1,5 +1,6 @@
 import os
 from typing import Optional, Callable, Sequence
+from pathlib import Path
 
 from tqdm import tqdm
 
@@ -10,10 +11,10 @@ from utils import images_reader_by_batch
 
 
 class TrackingBenchmark(IBenchmark):
-    def __init__(self, detector, tracker_factory: Callable[[str, Sequence], BaseTracker],
-                 dataset_path: str,
+    def __init__(self, detector, tracker_factory: Callable[[Path, Sequence], BaseTracker],
+                 dataset_path: Path,
                  batch_size: int = 32,
-                 video_writer_factory: Optional[Callable[[str, Sequence], ITrackWriter]] = None,
+                 video_writer_factory: Optional[Callable[[Path, Sequence], ITrackWriter]] = None,
                  mota_metrics: Optional[IMOTAMetrics] = None,
                  description: Optional[str] = None):
         self.detector = detector
@@ -41,8 +42,8 @@ class TrackingBenchmark(IBenchmark):
     def run(self):
         if self.description:
             print(self.description)
-
-        for mot_data in tqdm(load_mot_datas(self.dataset_path)):
+        total = len([d for d in self.dataset_path.glob('*') if d.is_dir()])
+        for mot_data in tqdm(load_mot_datas(self.dataset_path), desc='Videos', total=total):
             mot_data: MOTData
 
             tracker = self.tracker_factory(mot_data.root_dir, mot_data.sequence)
@@ -50,13 +51,11 @@ class TrackingBenchmark(IBenchmark):
 
             self._make_video_writer(mot_data)
 
-            for batch_i, frames_batch in enumerate(
-                    images_reader_by_batch(mot_data.image_dir, self.batch_size)):
+            for batch_i, frames_batch in enumerate(images_reader_by_batch(mot_data.image_dir, self.batch_size)):
                 batch_preds = self.detector.inference(frames_batch)
                 tracking_objects_batch = tracker.update(frames_batch, batch_preds)
 
-                for i, (frame, tracking_objects, bbs) in enumerate(
-                        zip(frames_batch, tracking_objects_batch, batch_preds)):
+                for i, (frame, tracking_objects, bbs) in enumerate(zip(frames_batch, tracking_objects_batch, batch_preds)):
                     i = batch_i * self.batch_size + i
                     gt_frame = gt_data[gt_data['frame'] == i]
 
