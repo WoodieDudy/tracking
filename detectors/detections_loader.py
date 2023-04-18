@@ -20,9 +20,10 @@ class DetectionsLoader(BaseDetector):
             mot_data: MOTData
             gt_data = mot_data.gt_data
             video_len = mot_data.sequence.seqLength
+            visible_gt_data = gt_data[gt_data['visibility'] <= 5]
 
             for frame_id in tqdm(range(1, video_len + 1)):
-                frame_gt: pd.DataFrame = gt_data[gt_data['frame'] == frame_id]
+                frame_gt: pd.DataFrame = visible_gt_data[visible_gt_data['frame'] == frame_id]
                 bbs = []
                 for x, y, w, h in zip(frame_gt['x'], frame_gt['y'], frame_gt['w'], frame_gt['h']):
                     bbs.append(BoundingBox(x, y, x + w, y + h, 1))
