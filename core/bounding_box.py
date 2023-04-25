@@ -14,15 +14,15 @@ class BoundingBox:
 
     @property
     def xywh(self):
-        return map(int, [self.x_min, self.y_min, self.x_max - self.x_min, self.y_max - self.y_min])
+        return list(map(int, [self.x_min, self.y_min, self.x_max - self.x_min, self.y_max - self.y_min]))
 
     @property
     def xyxy(self):
-        return map(int, [self.x_min, self.y_min, self.x_max, self.y_max])
+        return list(map(int, [self.x_min, self.y_min, self.x_max, self.y_max]))
 
     def to_tensor(self):
         # no cls yet?
         return torch.tensor([self.x_min, self.y_min, self.x_max, self.y_max, self.conf])
 
-    def to_deepsort(self):
+    def to_deepsort_reid(self):
         return [[self.x_min, self.y_min, self.x_max - self.x_min, self.y_max - self.y_min], self.conf, self.cls_id]
