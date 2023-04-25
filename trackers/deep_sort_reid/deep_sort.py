@@ -6,7 +6,7 @@ from trackers.base_tracker import BaseTracker
 
 class DeepSort(BaseTracker):
     def __init__(self):
-        self._tracker = DeepSortTracker(embedder_gpu=True, half=False)
+        self._tracker = DeepSortTracker(embedder_gpu=True, half=True, embedder='torchreid')
 
     def _get_xyxy(self, track):
         ret = track.to_tlwh()
