@@ -15,6 +15,7 @@ from utils import images_reader_by_batch
 class TrackingBenchmark(IBenchmark):
     def __init__(self, detector, tracker_factory: Callable[[Path, Sequence], BaseTracker],
                  dataset_path: Path,
+                 save_path: Path,
                  batch_size: int = 32,
                  video_writer_factory: Optional[Callable[[Path, Sequence], ITrackWriter]] = None,
                  mota_metrics: Optional[IMOTAMetrics] = None,
@@ -26,6 +27,7 @@ class TrackingBenchmark(IBenchmark):
         self.mota_metrics = mota_metrics
         self.batch_size = batch_size
         self.description = description
+        self.save_path = save_path
 
         self._video_writer = None
 
@@ -75,12 +77,7 @@ class TrackingBenchmark(IBenchmark):
         if self.mota_metrics:
             metrics = self.mota_metrics.get_metrics()
             print(metrics)
-            self.mota_metrics.save_metrics(os.path.join(self.dataset_path, 'metrics.csv'))
-
-            df = pandas.read_csv(os.path.join(self.dataset_path, 'metrics.csv'))
-            df.columns = ['dataset', 'num_frames', 'mota', 'motp', 'idf1', 'precision', 'recall']
-            # add column mean time
-            df['mean_time'] = sum(timings) / len(timings) / self.batch_size
-            df['avg boxes'] = sum(boxes) / len(boxes)
-            df.to_csv(os.path.join(self.dataset_path, 'metrics.csv'), index=False)
-            print(df)
+            metrics.columns = ['dataset', 'num_frames', 'mota', 'motp', 'idf1', 'precision', 'recall']
+            metrics['fps'] = 1 / (sum(timings) / len(timings) / self.batch_size)
+            metrics['avg boxes'] = sum(boxes) / len(boxes)
+            metrics.to_csv(self.save_path, index=False)
