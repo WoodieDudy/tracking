@@ -210,6 +210,9 @@ deepsort_benchmark8 = TrackingBenchmark(
 )
 
 runner = BenchmarkRunner([
+    bytetrack_benchmark7,
+    deepsort_benchmark7,
+
     bytetrack_benchmark1,
     deepsort_benchmark1,
 
@@ -218,7 +221,6 @@ runner = BenchmarkRunner([
     bytetrack_benchmark4,
     bytetrack_benchmark5,
     bytetrack_benchmark6,
-    bytetrack_benchmark7,
     bytetrack_benchmark8,
 
     deepsort_benchmark2,
@@ -226,7 +228,6 @@ runner = BenchmarkRunner([
     deepsort_benchmark4,
     deepsort_benchmark5,
     deepsort_benchmark6,
-    deepsort_benchmark7,
     deepsort_benchmark8,
 ])
 

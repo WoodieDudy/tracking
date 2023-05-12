@@ -77,7 +77,7 @@ class TrackingBenchmark(IBenchmark):
         if self.mota_metrics:
             metrics = self.mota_metrics.get_metrics()
             print(metrics)
-            metrics.columns = ['dataset', 'num_frames', 'mota', 'motp', 'idf1', 'precision', 'recall']
+            # metrics.columns = ['dataset', 'num_frames', 'mota', 'motp', 'idf1', 'precision', 'recall']
             metrics['fps'] = 1 / (sum(timings) / len(timings) / self.batch_size)
             metrics['avg boxes'] = sum(boxes) / len(boxes)
             metrics.to_csv(self.save_path, index=False)
