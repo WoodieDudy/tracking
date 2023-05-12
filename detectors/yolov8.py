@@ -14,7 +14,7 @@ class Yolov8Detector(BaseDetector):
         for bbs_of_frames in preds_of_frames:
             bbs = []
             for xyxy, cls, conf in zip(bbs_of_frames.boxes.xyxy, bbs_of_frames.boxes.cls, bbs_of_frames.boxes.conf):
-                bbs.append(BoundingBox(*xyxy, conf.cpu(), cls.cpu()))
+                bbs.append(BoundingBox(*xyxy.cpu(), conf.cpu(), cls.cpu()))
             res.append(bbs)
 
         return res

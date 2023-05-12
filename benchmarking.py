@@ -8,15 +8,16 @@ from benchmarks.tracking_benchmark import TrackingBenchmark
 from detectors import Yolov8Detector, DetectionsLoader
 from trackers import ByteTracker, DeepSort
 from trackers.deep_sort.tracker import RealDeepSort
+from trackers import DeepSortReid
 
-dataset_path = Path('train')
+dataset_path = Path('/home/gk/projects/nir_tracking/datasets/sportsmot_publish/dataset/val')
 batch_size = 64
 
 videos_path = Path('videos')
 os.makedirs(str(videos_path), exist_ok=True)
 byte_track_benchmark = TrackingBenchmark(
-    # detector=DetectionsLoader(Path(dataset_path), 'det'),
-    detector=Yolov8Detector(),
+    detector=DetectionsLoader(Path(dataset_path), 'gt'),
+    # detector=Yolov8Detector(),
     tracker_factory=lambda root_dir, sequence: ByteTracker(fps=sequence.frameRate,
                                                            video_shape=(sequence.imHeight, sequence.imWidth)),
     dataset_path=dataset_path,
@@ -29,7 +30,7 @@ byte_track_benchmark = TrackingBenchmark(
 deep_sort_benchmark = TrackingBenchmark(
     # detector=DetectionsLoader(Path(dataset_path), 'det'),
     detector=Yolov8Detector(),
-    tracker_factory=lambda root_dir, sequence: RealDeepSort(),
+    tracker_factory=lambda root_dir, sequence: DeepSortReid(),
     dataset_path=dataset_path,
     batch_size=batch_size,
     video_writer_factory=lambda root_dir, sequence: TrackWriter(sequence, videos_path / f'DeepSort_{str(root_dir)[-2:]}_result.mp4'),
@@ -38,8 +39,8 @@ deep_sort_benchmark = TrackingBenchmark(
 )
 
 runner = BenchmarkRunner([
-    # byte_track_benchmark,
-    deep_sort_benchmark,
+    byte_track_benchmark,
+    # deep_sort_benchmark,
 ])
 
 runner.run()

@@ -1,8 +1,10 @@
 import os
 from typing import Optional, Callable, Sequence
 from pathlib import Path
+import time
 
 from tqdm import tqdm
+import pandas
 
 from benchmarks.base import ITrackWriter, IBenchmark, IMOTAMetrics
 from mot.mot_loading import load_mot_datas, MOTData
@@ -43,6 +45,8 @@ class TrackingBenchmark(IBenchmark):
         if self.description:
             print(self.description)
         total = len([d for d in self.dataset_path.glob('*') if d.is_dir()])
+        timings = []
+        boxes = []
         for mot_data in tqdm(load_mot_datas(self.dataset_path), desc='Videos', total=total):
             mot_data: MOTData
 
@@ -50,10 +54,13 @@ class TrackingBenchmark(IBenchmark):
             gt_data = mot_data.gt_data
 
             self._make_video_writer(mot_data)
-
-            for batch_i, frames_batch in enumerate(images_reader_by_batch(mot_data.image_dir, self.batch_size)):
+            batches_count = len(os.listdir(mot_data.image_dir)) // self.batch_size
+            for batch_i, frames_batch in tqdm(enumerate(images_reader_by_batch(mot_data.image_dir, self.batch_size)), total=batches_count):
                 batch_preds = self.detector.inference(frames_batch)
+                boxes.extend([len(b) for b in batch_preds])
+                start_time = time.time()
                 tracking_objects_batch = tracker.update(frames_batch, batch_preds)
+                timings.append(time.time() - start_time)
 
                 for i, (frame, tracking_objects, bbs) in enumerate(zip(frames_batch, tracking_objects_batch, batch_preds)):
                     i = batch_i * self.batch_size + i
@@ -69,3 +76,11 @@ class TrackingBenchmark(IBenchmark):
             metrics = self.mota_metrics.get_metrics()
             print(metrics)
             self.mota_metrics.save_metrics(os.path.join(self.dataset_path, 'metrics.csv'))
+
+            df = pandas.read_csv(os.path.join(self.dataset_path, 'metrics.csv'))
+            df.columns = ['dataset', 'num_frames', 'mota', 'motp', 'idf1', 'precision', 'recall']
+            # add column mean time
+            df['mean_time'] = sum(timings) / len(timings) / self.batch_size
+            df['avg boxes'] = sum(boxes) / len(boxes)
+            df.to_csv(os.path.join(self.dataset_path, 'metrics.csv'), index=False)
+            print(df)

@@ -1,1 +1,1 @@
-from .deep_sort import DeepSort
+from .deep_sort import DeepSortReid

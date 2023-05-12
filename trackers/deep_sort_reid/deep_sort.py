@@ -4,9 +4,9 @@ from core import BoundingBox, TrackObject
 from trackers.base_tracker import BaseTracker
 
 
-class DeepSort(BaseTracker):
+class DeepSortReid(BaseTracker):
     def __init__(self):
-        self._tracker = DeepSortTracker(embedder_gpu=True, half=True, embedder='torchreid')
+        self._tracker = DeepSortTracker(embedder_gpu=True, half=False)
 
     def _get_xyxy(self, track):
         ret = track.to_tlwh()
